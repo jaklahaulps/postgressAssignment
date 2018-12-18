@@ -11,18 +11,26 @@ const client = new pg.Client({
   ssl      : settings.ssl
 });
 
+
+
 client.connect((err) => {
   if (err) {
     return console.error("Connection Error", err);
   }
 
-  client.query(`SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text`
-    ,[input], (err, result) => {
-    if (err) {
-      return console.error("error running query", err);
-    }
+  function printResult(err, result){ 
     console.log(result.rows); //output: 1
-  
-    client.end();
-  });
+  };
+
+  client.query(`SELECT * FROM famous_people WHERE first_name = $1::text OR last_name = $1::text`,[input], (err, result) => {
+      console.log("Searchng ...");
+      if (err) {
+        return console.error("error running query", err);
+      } else {
+        printResult(null, result);
+      }
+      client.end();
+    })
+
+// client.end();
 });
